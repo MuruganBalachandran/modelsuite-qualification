@@ -41,7 +41,7 @@ const STATUS_CLASS = {
   Rejected:  'status-badge-Rejected',
 };
 
-const TasksTable = ({ tasks, onEdit, onRefresh }) => {
+const TasksTable = ({ tasks, onEdit, onRefresh, isFiltering }) => {
 
   const handleDelete = async (id) => {
     try {
@@ -60,7 +60,9 @@ const TasksTable = ({ tasks, onEdit, onRefresh }) => {
           <rect x="3" y="3" width="18" height="18" rx="3"/>
           <path d="M9 12h6M9 8h6M9 16h4"/>
         </svg>
-        No tasks yet. Create your first task above.
+        {isFiltering
+          ? "No tasks match the current search or filter."
+          : "No tasks yet. Create your first task above."}
       </div>
     );
   }

@@ -26,25 +26,36 @@ const AdminDashboard = () => {
   const [editTask, setEditTask]     = useState(null);
   const [search, setSearch]         = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  
+  const [stats, setStats] = useState({ total: 0, open: 0, submitted: 0, approved: 0 });
+  const [totalCount, setTotalCount] = useState(0);
+
+  const statusFilterOptions = [
+    "All",
+    "Open",
+    "Claimed",
+    "Submitted",
+    "Completed",
+  ];
 
   const loadTasks = async () => {
     try {
-      const { data } = await fetchAllTasks();
-      setTasks(data);
+      const { data } = await fetchAllTasks(search, statusFilter);
+      setTasks(data.tasks);
+      setStats(data.stats);
+      setTotalCount(data.totalCount);
     } catch {
       alert('Failed to load tasks');
     }
   };
 
-  // eslint-disable-next-line
-  useEffect(() => { loadTasks(); }, []);
-
-  const stats = {
-    total:     tasks.length,
-    open:      tasks.filter((t) => t.status === 'Open').length,
-    submitted: tasks.filter((t) => t.status === 'Submitted').length,
-    approved:  tasks.filter((t) => t.status === 'Approved').length,
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadTasks();
+    }, 300);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line
+  }, [search, statusFilter]);
 
   const statCards = [
     { label: 'Total Tasks', value: stats.total,     colorClass: 'stat-card-default', valueColor: '#E5E2E1' },
@@ -53,14 +64,6 @@ const AdminDashboard = () => {
     { label: 'Approved',    value: stats.approved,  colorClass: 'stat-card-green',   valueColor: '#34D399' },
   ];
 
-  /* Filter tasks */
-  const filteredTasks = tasks.filter((t) => {
-    const matchSearch = !search ||
-      t.title?.toLowerCase().includes(search.toLowerCase()) ||
-      t.assignedTo?.name?.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === 'All' || t.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
 
   return (
     <div className="flex min-h-screen" style={{ background: '#050505' }}>
@@ -120,7 +123,7 @@ const AdminDashboard = () => {
                   border: '1px solid rgba(255,255,255,0.09)',
                   fontFamily: 'Inter, sans-serif',
                 }}>
-                {filteredTasks.length} {filteredTasks.length === 1 ? 'task' : 'tasks'}
+                {tasks.length} {tasks.length === 1 ? 'task' : 'tasks'}
               </span>
             </div>
 
@@ -146,17 +149,16 @@ const AdminDashboard = () => {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="search-input-glass custom-select"
                 style={{ paddingLeft: '12px', cursor: 'pointer' }}>
-                <option value="All">All Status</option>
-                <option value="Open">Open</option>
-                <option value="Claimed">Claimed</option>
-                <option value="Submitted">Submitted</option>
-                <option value="Approved">Approved</option>
-                <option value="Rejected">Rejected</option>
+                {statusFilterOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option === 'All' ? 'All Status' : option}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
 
-          <TasksTable tasks={filteredTasks} onEdit={setEditTask} onRefresh={loadTasks} />
+          <TasksTable tasks={tasks} onEdit={setEditTask} onRefresh={loadTasks} isFiltering={totalCount > 0} />
         </div>
       </main>
 
