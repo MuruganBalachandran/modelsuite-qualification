@@ -1,16 +1,46 @@
-﻿const Task = require('../models/Task');
+const Task = require('../models/Task');
 
 // @desc  Get all tasks
 // @route GET /api/tasks
 // @access Admin
 const getAllTasks = async (req, res) => {
   try {
-    const tasks = await Task.find({})
+    // 
+    const { search, status } = req.query;
+    let query = {};
+
+    if (search) {
+      query.title = { $regex: search, $options: 'i' };
+    }
+
+    if (status && status !== 'All') {
+      if (status === 'Completed') {
+        query.status = 'Approved';
+      } else {
+        query.status = status;
+      }
+    }
+
+    const tasks = await Task.find(query)
       .populate('assignedTo', 'name email')
       .populate('createdBy', 'name')
       .sort({ createdAt: -1 });
 
-    res.json(tasks);
+    const totalCount = await Task.countDocuments();
+    const openCount = await Task.countDocuments({ status: 'Open' });
+    const submittedCount = await Task.countDocuments({ status: 'Submitted' });
+    const approvedCount = await Task.countDocuments({ status: 'Approved' });
+
+    res.json({
+      tasks,
+      totalCount,
+      stats: {
+        total: totalCount,
+        open: openCount,
+        submitted: submittedCount,
+        approved: approvedCount,
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
