@@ -1,6 +1,15 @@
 ﻿const multer = require('multer');
 const path = require('path');
 
+// Only safe document and image files should be accepted.
+const allowedMimeTypes = new Set([
+  'application/pdf',
+  'image/png',
+  'image/jpeg',
+  'image/gif',
+  'image/webp',
+]);
+
 // Store files locally on disk
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -12,6 +21,20 @@ const storage = multer.diskStorage({
     cb(null, unique + path.extname(file.originalname));
   },
 });
-const upload = multer({ storage });
+
+// filter file types to only allow PDFs and images
+const fileFilter = (req, file, cb) => {
+  if (allowedMimeTypes.has(file.mimetype)) {
+    cb(null, true);
+    return;
+  }
+
+  cb(new Error('Only PDF and image files are allowed.'));
+};
+
+const upload = multer({
+  storage,
+  fileFilter,
+});
 
 module.exports = upload;

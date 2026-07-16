@@ -53,7 +53,12 @@ const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
               Upload File
             </label>
             
-            <input id="sub-file" type="file" onChange={handleFileChange} className="file-input-hidden" />
+            {/* accepts only pdf and image files */}
+            <input
+             id="sub-file"
+             type="file"
+             accept=".pdf,image/png,image/jpeg,image/gif,image/webp"
+             onChange={handleFileChange} className="file-input-hidden" />
             <label htmlFor="sub-file"
               className="flex flex-col items-center justify-center gap-2 py-7 px-4 bg-bg-input border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary hover:bg-primary/5 transition-all text-center">
               {file ? (
