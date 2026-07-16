@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import UserAvatar from '../../components/common/UserAvatar';
 import Sidebar from '../../components/admin/Sidebar';
 import SubmissionReviewModal from '../../components/admin/SubmissionReviewModal';
 import { fetchAllSubmissions } from '../../api/submissions';
@@ -101,9 +102,12 @@ const SubmissionsPage = () => {
                       {/* Talent */}
                       <td className={`${tdCls} whitespace-nowrap`}>
                         <div className="flex items-center gap-2">
-                          <div className="w-[26px] h-[26px] rounded-full avatar-talent flex items-center justify-center text-[11px] font-bold text-white shrink-0">
-                            {sub.talentId?.name?.[0] ?? '?'}
-                          </div>
+                          <UserAvatar
+                            name={sub.talentId?.name}
+                            avatar={sub.talentId?.avatar}
+                            className="w-[26px] h-[26px] rounded-full avatar-talent flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+                            alt={`${sub.talentId?.name || "Talent"} avatar`}
+                          />
                           <span className="text-text-primary">{sub.talentId?.name || '—'}</span>
                         </div>
                       </td>

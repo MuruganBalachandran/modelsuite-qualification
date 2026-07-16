@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import UserAvatar from '../common/UserAvatar';
 
 /* ── Clean SVG line-art icons (no emojis, no AI icons) ── */
 const IconDashboard = () => (
@@ -87,9 +88,12 @@ const Sidebar = () => {
         <div className="sidebar-divider mb-4" />
         <div className="flex items-center justify-between gap-2 px-1">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-full avatar-admin flex items-center justify-center text-[12px] font-bold text-white shrink-0">
-              {user?.name?.[0]?.toUpperCase() ?? 'A'}
-            </div>
+            <UserAvatar
+              name={user?.name}
+              avatar={user?.avatar}
+              className="w-8 h-8 rounded-full avatar-admin flex items-center justify-center text-[12px] font-bold text-white shrink-0"
+              alt={`${user?.name || "Admin"} avatar`}
+            />
             <div className="min-w-0">
               <p className="text-[13px] font-semibold truncate max-w-[110px]"
                 style={{ color: '#E5E2E1', fontFamily: 'Inter, sans-serif' }}>

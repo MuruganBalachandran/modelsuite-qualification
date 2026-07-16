@@ -1,4 +1,5 @@
 ﻿import { reviewSubmission } from '../../api/submissions';
+import UserAvatar from "../common/UserAvatar";
 
 const REVIEW_STATUS_CLASS = {
   Pending:  'status-badge-Submitted',
@@ -46,7 +47,7 @@ const SubmissionReviewModal = ({ submission, onClose, onReviewed }) => {
               {task.dueDate && (
                 <span className="text-[12px] text-text-faint">Due: {task.dueDate}</span>
               )}
-              
+
               {task.status && (
                 <span className={`inline-block px-2 py-[2px] rounded-full text-[11px] font-medium status-badge-${task.status}`}>
                   {task.status}
@@ -57,9 +58,12 @@ const SubmissionReviewModal = ({ submission, onClose, onReviewed }) => {
 
           {/* Talent info */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full avatar-talent flex items-center justify-center text-[13px] font-bold text-white shrink-0">
-              {talent.name?.[0] ?? 'T'}
-            </div>
+            <UserAvatar
+              name={talent.name}
+              avatar={talent.avatar}
+              className="w-9 h-9 rounded-full avatar-talent flex items-center justify-center text-[13px] font-bold text-white shrink-0"
+              alt={`${talent.name || "Talent"} avatar`}
+            />
             <div>
               <p className="text-[14px] font-medium text-text-primary">{talent.name || 'Unknown Talent'}</p>
               <p className="text-[12px] text-text-faint">{talent.email || '—'}</p>
@@ -90,7 +94,7 @@ const SubmissionReviewModal = ({ submission, onClose, onReviewed }) => {
               <a href={submission.fileUrl} target="_blank" rel="noreferrer"
                 className="flex items-center gap-2.5 text-[13px] text-primary font-medium hover:text-secondary transition-colors">
                 <span className="text-base">📎</span>
-                
+
                 <span className="underline underline-offset-2 truncate">{submission.fileUrl}</span>
                 <span className="text-text-faint text-[11px] shrink-0">↗ open</span>
               </a>
