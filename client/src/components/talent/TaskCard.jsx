@@ -15,7 +15,9 @@ const TaskCard = ({ task, showClaimButton = false, onClaimed }) => {
       await claimTask(task._id);
       if (onClaimed) onClaimed();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to claim task');
+      // alert the user and call onClaimed to refresh the task list
+      if (onClaimed) onClaimed();
+      alert(err.response?.data?.message || "Failed to claim task");
     }
   };
 
@@ -32,7 +34,7 @@ const TaskCard = ({ task, showClaimButton = false, onClaimed }) => {
         )}
       </div>
 
-      
+
       {task.description && (
         <p className="text-[13px] text-text-muted leading-relaxed">{task.description}</p>
       )}
